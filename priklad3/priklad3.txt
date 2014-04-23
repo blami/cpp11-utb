@@ -1,0 +1,65 @@
+Úkol 3
+
+Vytvořte třídu Plátno (Canvas) do které budete moci přidávat potomky třídy
+ObrazecBase a potom jedním příkazem zobrazit všechny objekty na plátně pomocí
+třídy AsciiKontext. Dále vytvořte program, kdy uživatel si bude za běhu
+programu vybírat, jaký obrazec chce vložit. Implementujte operace pro
+kopírování a přesun (konstruktor i operátor přiřazení = ) – doplňte členské
+funkce jak do rozhraní, tak do implemetace. Kód zorganizujte do následujících
+hlavičkových (a případně zdrojových souborů):
+
+Platno.h, který bude obsahovat definici třídy Platno:
+#pragma once
+
+#include "IObrazec.h"
+#include "IKontext.h"
+#include <memory>
+#include <vector>
+
+namespace Obrazce
+{
+    class Platno
+{
+private:
+    std::vector < std::shared_ptr<IObrazec>> obrazce;
+    std::shared_ptr<IKontext> kontext;
+public:
+    Platno(const Platno&) = delete;
+    Platno(const Platno&&) = delete;
+    Platno& operator = (const Platno&) = delete;
+    Platno& operator = (const Platno&&) = delete;
+    Platno(std::shared_ptr<IKontext> kontext);
+    void Pridej(std::shared_ptr<IObrazec> obrazec);
+    void OdstranVsechnyObrazce();
+    void Zobraz(); // Vymaze kontext a zobrazi objekty
+    //std::string SerializujJson() const; // Ukol 4
+    //void DeserializujJson(const std::string& jsonRetezec); // Ukol 4
+    ~Platno();
+    };
+}
+
+Funkčnost ověřte na následujícím kódu:
+int main()
+{
+    shared_ptr<IKontext> kontext = make_shared<AsciiKontext>(20,20);
+    Platno platno(kontext);
+
+    shared_ptr<Kruh> kruh = make_shared<Kruh>( 5, Point2D(10, 10) );
+    shared_ptr<Ctverec> ctverec = make_shared<Ctverec>( ( 5, Point2D(10, 10) );
+
+    platno.Pridej(kruh);
+    platno.Pridej(ctverec);
+
+    platno.Zobraz();
+
+    return 0;
+}
+
+Vytvořte ukázkovou aplikaci, kdy uživatel bude na plátno přidávat obrazce z
+úkolu 2 (čtverec, kruh, trojúhelník a polygon) a zadávat jejich parametry
+(včetně zvětšení a posunutí).
+
+Odevzdejte soubory AsciiKontext.h, AsciiKontext.cpp, IKontext.h, Point2D.h,
+IObrazec.h, Kruh.h, Kruh.cpp, Ctverec.h, Ctverec.cpp, Trojuhelnik.h,
+Trojuhelnik.cpp, Polygon.h, Polygon.cpp, main.cpp (s ukázkovou aplikací),
+Platno.h a Platno.cpp
