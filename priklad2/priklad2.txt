@@ -1,0 +1,24 @@
+Úkol 2
+
+Vytvořte třídy kruh, čtverec, trojúhelník a jednoduchý mnohoúhelník (simple
+polygon), které budou implementovat rozhraní IObrazec. Výpočet obsahu polygonu
+najdete například zde: http://mathworld.wolfram.com/PolygonArea.html. Výpočet
+těžiště a obsahu jednoduchého mnohoúhelníku najdete potom
+zde: http://demonstrations.wolfram.com/CenterOfMassOfAPolygon/.
+
+Vytvořte aplikaci, která zobrazí objekty pomocí třídy z prvního úkolu:
+
+Vytvoř nový kruh, zadej poloměr, střed, posunutí a zvětšení, vykresli ho do
+ascii kontextu a vypis teziste a obsah.
+
+Vytvoř nový čtverec, zadej délku strany, střed, posunutí a zvětšení, vykresli
+ho do ascii kontextu a vypis teziste a obsah.
+
+Vytvoř nový trojúhelník, zadej souřadnice tří bodů, posunutí a zvětšení,
+vykresli ho do ascii kontextu a vypis teziste a obsah.
+
+Vytvoř nový polygon, zadej souřadnice bodů, posunutí a zvětšení, vykresli ho do
+ascii kontextu a vypis teziste a obsah.
+
+Zobraz ascii kontext.
+Vymaz ascii kontext.
