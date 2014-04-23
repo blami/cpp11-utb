@@ -1,0 +1,71 @@
+Úkol 1
+
+Implementujte členské funkce třídy AsciiKontext, tak ať zobrazí matici znaků
+buď na terminálu, nebo na konzoli (ukázku najdete na druhé straně zadání).
+Zorganizujte kód do hlavičkových (a případně zdrojových souborů):
+
+• IKontext.h bude obsahovat definici rozhraní (struktury) IKontext.
+• AsciiKontext.h bude obsahovat deklaraci a definici třídy a členských funkcí
+    třídy AsciiKontext. 
+
+Pokud se rozhodnete oddělit deklaraci a definici členských funkcí, tak
+AsciiKontext.h bude obsahovat definici třídy AsciiKontext a deklaraci jejich
+členských funkcí a AsciiKontext.cpp bude obsahovat definici (implementaci)
+členských funkcí.
+
+#include <vector>
+#include <string>
+#include <iostream>
+struct IKontext
+{
+    virtual int VratVysku() const = 0;
+    virtual int VratSirku() const = 0;
+    virtual void Zobraz() const = 0;
+    virtual void Zapis(const double x, const double y) = 0;
+    virtual void Vymaz() = 0;
+    virtual ~IKontext() {};
+};
+
+class AsciiKontext : public IKontext
+{
+private:
+    std::vector<std::string> matice;
+    char znakPopredi = 'x';
+    char znakPozadi = '-';
+    int vyska;
+    int sirka;
+public:
+    AsciiKontext(const unsigned int pocetRadku, const unsigned int pocetSloupcu);
+    void NastavZnakPopredi(const char znak);
+    void NastavZnakPozadi(const char znak);
+    virtual int VratVysku() const override;
+    virtual int VratSirku() const override;
+    virtual void Zobraz() const override;
+    virtual void Zapis(const double x, const double y) override;
+    virtual void Vymaz() override;
+};
+
+Otestujte třídu s následující kódem:
+
+int main()
+{
+    int pocetRadku = 20;
+    int pocetSloupcu = 20;
+    AsciiKontext kontext(pocetRadku, pocetSloupcu);
+    std::cout << "Rozmery: " << kontext.VratVysku() << " x " << kontext.VratSirku() << 
+    std::endl;
+
+    for (int i = 0; i < pocetRadku; ++i)
+    {
+        kontext.Zapis(i, i);
+        kontext.Zapis(i, pocetRadku - 1 - i);
+    }
+
+    kontext.Zobraz();
+    kontext.NastavZnakPozadi('o');
+    kontext.Vymaz();
+    kontext.Zobraz();
+    return 0;
+}
+
+
