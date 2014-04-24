@@ -123,10 +123,10 @@ void Polygon::Vykresli(IKontext *kontext) const {
 		Bod t_bod = {bod.x, bod.y};
 
 		// Zvetseni
-		if(this->zvetseni > 1) {
-			t_bod.x = (t_bod.x * this->zvetseni) - body[0].x;
-			t_bod.y = (t_bod.y * this->zvetseni) - body[0].y;
-		}
+		t_bod.x = (t_bod.x * this->zvetseni) 
+			- (body[0].x * (this->zvetseni - 1));
+		t_bod.y = (t_bod.y * this->zvetseni)
+			- (body[0].y * (this->zvetseni - 1));
 
 		// Posunuti
 		t_bod.x = t_bod.x + this->posunuti.x;
