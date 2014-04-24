@@ -1,0 +1,68 @@
+Úkol 4
+Doplňte do rozhraní IPlátno metody pro serializaci a deserializaci všech
+objektů v plátně pomocí datového formátu JSON s využitím knihovny
+SuperEasyJSON. Kód zorganizujte do následujícíh hlavičkových (a případně
+zdrojových souborů):
+
+ObrazceJson.h, který bude obsahovat definici funkcí ObrazceJson
+
+namespace ObrazceJson
+{
+    json::Object Serializuj(const std::shared_ptr<IObrazec>& obrazec)
+    {
+        json::Object objekt;
+
+        if (std::dynamic_pointer_cast<Kruh>(obrazec) != nullptr)
+        {
+            auto kruh = std::dynamic_pointer_cast<Kruh>(obrazec);
+            // doplnit serializaci
+        }
+        else if (std::dynamic_pointer_cast<Ctverec>(obrazec) != nullptr)
+        {
+            auto ctverec = std::dynamic_pointer_cast<Ctverec>(obrazec);
+            // doplnit serializaci
+        }
+
+        // dalsi typy
+
+        return objekt;
+    }
+
+    std::shared_ptr<IObrazec> Deserializuj(json::Object objekt)
+    {
+        // deserializace jednoho objektu
+        std::shared_ptr<IObrazec> obrazec = std::make_shared<Ctverec>();
+
+        return obrazec;
+    }
+
+    std::vector<std::shared_ptr<IObrazec>> Deserializuj(std::string jsonRetezec)
+    {
+        std::vector<std::shared_ptr<IObrazec>> poleObrazcu;
+        // deserializace pole
+        return poleObrazcu;
+
+    }
+};
+
+Platno.h, které bude obsahovat  definici třídy Platno a tyto členské funkce
+ navíc:
+
+#pragma once
+#include <string>
+#include "IObrazec.h"
+#include <memory>
+
+struct Platno
+{
+    …
+    std::string SerializujJson() const = 0;
+    void DeserializujJson(const std::string& jsonRetezec) = 0;
+    …
+};
+
+Vytvořte ukázkovou aplikaci, kdy uživatel bude na plátno přidávat různé obrazce
+a zadávat jejich parametry, potom je serializuj do JSON formátu a uloží do
+souboru a naopak, uživatel zadá název souboru a objekty se ze souboru zase
+deserializují.
+
