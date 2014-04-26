@@ -1,0 +1,29 @@
+Úkol 5
+
+Vytvořte třídu ImageKontext jako implementaci IKontext která s využitím
+například knihovny CImage (nebo jiné knihovny v c++) vykreslí a zobrazí objekty
+jako obrázek 
+
+struct IKontext
+{
+    virtual int VratVysku() const = 0;
+    virtual int VratSirku() const = 0;
+    virtual void Zobraz() const = 0;
+    virtual void Zapis(const double x, const double y) = 0;
+    virtual void Vymaz() = 0;
+};
+
+Vytvořte soubor ImageKontext.h, který bude obsahovat třídu ImageKontext:
+
+struct ImageKontext final : public IKontext
+{
+    virtual int VratVysku() const ;
+    virtual int VratSirku() const;
+    virtual void Zobraz() const;
+    virtual void Zapis(const double x, const double y);
+    virtual void Vymaz();
+};
+
+Vytvořte ukázkovou aplikaci která bude demonstrovat použití tohoto kontextu
+spolu s třídou Plátno . Uživatel si za běhu programu bude vybírat, zda chce
+výstup do obrázku nebo na terminál.
