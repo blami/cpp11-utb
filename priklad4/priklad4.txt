@@ -1,4 +1,5 @@
 Úkol 4
+
 Doplňte do rozhraní IPlátno metody pro serializaci a deserializaci všech
 objektů v plátně pomocí datového formátu JSON s využitím knihovny
 SuperEasyJSON. Kód zorganizujte do následujícíh hlavičkových (a případně
@@ -46,7 +47,7 @@ namespace ObrazceJson
 };
 
 Platno.h, které bude obsahovat  definici třídy Platno a tyto členské funkce
- navíc:
+navíc:
 
 #pragma once
 #include <string>
@@ -65,4 +66,3 @@ Vytvořte ukázkovou aplikaci, kdy uživatel bude na plátno přidávat různé 
 a zadávat jejich parametry, potom je serializuj do JSON formátu a uloží do
 souboru a naopak, uživatel zadá název souboru a objekty se ze souboru zase
 deserializují.
-
