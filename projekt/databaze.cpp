@@ -2,13 +2,22 @@
  * databaze.h: definice tridy Databaze
  */
 
-#include "databaze.h"
 #include <algorithm>
 #include <cctype>
 #include <sstream>
+#include <fstream>
+#include "databaze.h"
+#include "serializace.h"
 
 using namespace data;
 
+
+// Vymaze celou databazi
+void Databaze::VymazDatabazi() {
+	this->studenti.clear();
+	this->predmety.clear();
+	this->zapisy.clear();
+}
 
 // Porovna dve promenne typu retezec bez ohledu na velikost pismen
 bool Databaze::PorovnejString(const std::string& l, const std::string &p)
@@ -16,7 +25,7 @@ bool Databaze::PorovnejString(const std::string& l, const std::string &p)
 	// Retezce musi mit stejnou delku
 	return l.size() == p.size()
 		// Funkce equal porovnava dva rozsahy vytycene iteratory pomoci
-		// dodaneho predikatu
+		// predikatu
 		&& std::equal(begin(l), end(l), begin(p),
 			// Lambda vyraz pro urceni zda jsou elemnty shodne nebo ne
 			// porovnavame "zmensene" verze znaku z leve a prave strany
@@ -26,8 +35,8 @@ bool Databaze::PorovnejString(const std::string& l, const std::string &p)
 }
 
 // Vytvori noveho studenta
-void Databaze::VytvorStudenta(std::string jmeno, std::string prijmeni,
-	unsigned int rocnik) {
+std::shared_ptr<Student> Databaze::VytvorStudenta(std::string jmeno,
+	std::string prijmeni, unsigned int rocnik) {
 	// Vygenerovat nove id
 	unsigned int id = 0;
 	for(auto student : this->studenti)
@@ -36,6 +45,8 @@ void Databaze::VytvorStudenta(std::string jmeno, std::string prijmeni,
 
 	auto student = std::make_shared<Student>(++id, jmeno, prijmeni, rocnik);
 	this->studenti.push_back(student);
+
+	return student;
 }
 
 // Smaze studenta a jeho zapisy
@@ -55,13 +66,13 @@ void Databaze::SmazStudenta(std::shared_ptr<Student> student) {
 }
 
 // Vrati seznam vsech studentu
-const std::vector<std::shared_ptr<Student>> Databaze::SeznamStudentu() const {
+std::vector<std::shared_ptr<Student>> Databaze::SeznamStudentu() const {
 	return this->studenti;
 }
 
 // Najde studenty dle zadaneho kriteria a dotazu. Metoda neni citliva na
 // velikost pismen
-const std::vector<std::shared_ptr<Student>> Databaze::NajdiStudenta(
+std::vector<std::shared_ptr<Student>> Databaze::NajdiStudenta(
 	StudentKriterium kriterium, std::string dotaz) const {
 
 	std::vector<std::shared_ptr<Student>> vysledek;
@@ -99,6 +110,9 @@ const std::vector<std::shared_ptr<Student>> Databaze::NajdiStudenta(
 // Zapise predmet studentovi
 void Databaze::ZapisPredmet(std::shared_ptr<Student> student,
 	std::shared_ptr<Predmet> predmet, Znamka znamka) {
+	// Overime ze student a predmet nejsou null
+	if(student == nullptr || predmet == nullptr)
+		return;
 	// Overime ze predmet a student jsou opravdu v databazi
 	if((std::find(begin(this->studenti), end(this->studenti), student) ==
 		end(this->studenti)) ||
@@ -120,7 +134,7 @@ void Databaze::ZapisPredmet(std::shared_ptr<Student> student,
 }
 
 // Vrati seznam zapsanych predmetu studenta
-const std::vector<std::shared_ptr<Zapis>> Databaze::VratZapisy(
+std::vector<std::shared_ptr<Zapis>> Databaze::VratZapisy(
 	std::shared_ptr<Student> student) const {
 	std::vector<std::shared_ptr<Zapis>> zapisy;
 
@@ -160,7 +174,7 @@ float Databaze::SpoctiPrumer(std::shared_ptr<Student> student) const {
 }
 
 // Vytvori novy predmet
-void Databaze::VytvorPredmet(std::string nazev) {
+std::shared_ptr<Predmet> Databaze::VytvorPredmet(std::string nazev) {
 	// Vygenerovat nove id
 	unsigned int id = 0;
 	for(auto predmet : this->predmety)
@@ -169,6 +183,8 @@ void Databaze::VytvorPredmet(std::string nazev) {
 
 	auto predmet = std::make_shared<Predmet>(++id, nazev);
 	this->predmety.push_back(predmet);
+
+	return predmet;
 }
 
 // Smaze predmet a jeho zapisy
@@ -187,7 +203,7 @@ void Databaze::SmazPredmet(std::shared_ptr<Predmet> predmet) {
 }
 
 // Vrati seznam vsech predmetu
-const std::vector<std::shared_ptr<Predmet>> Databaze::SeznamPredmetu() const {
+std::vector<std::shared_ptr<Predmet>> Databaze::SeznamPredmetu() const {
 	return this->predmety;
 }
 
@@ -205,9 +221,25 @@ unsigned int Databaze::VratPocetZapsanychStudentu(
 	return pocet;
 }
 
+// Vrati zapisy predmetu
+std::vector<std::shared_ptr<Zapis>> Databaze::VratZapisy(
+	std::shared_ptr<Predmet> predmet) const {
+	std::vector<std::shared_ptr<Zapis>> zapisy;
+
+	// Nemusime overovat ze student je studentem, protoze kdyz neni, nebude mit
+	// zapsany zadne predmety
+	for(auto zapis : this->zapisy) {
+		if(zapis->JePredmetu(predmet))
+			zapisy.push_back(zapis);
+	}
+
+	return zapisy;
+}
+
+
 // Najde predmety dle zadaneho kriteria a dotazu. Metoda neni citliva na
 // velikost pismen.
-const std::vector<std::shared_ptr<Predmet>> Databaze::NajdiPredmet(
+std::vector<std::shared_ptr<Predmet>> Databaze::NajdiPredmet(
 	PredmetKriterium kriterium, std::string dotaz) const {
 
 	std::vector<std::shared_ptr<Predmet>> vysledek;
@@ -236,12 +268,14 @@ const std::vector<std::shared_ptr<Predmet>> Databaze::NajdiPredmet(
 	return vysledek;
 }
 
-// Zrusi zapis ktery vyhovuje prislusnosti studentovi, predmetu nebo obojimu
-void Databaze::ZrusZapis(std::shared_ptr<Student> student,
+// Zrusi zapis ktery vyhovuje prislusnosti studentovi, predmetu nebo obojimu.
+// Vraci pocet zrusenych zapisu.
+unsigned int Databaze::ZrusZapis(std::shared_ptr<Student> student,
 	std::shared_ptr<Predmet> predmet) {
+	unsigned int zruseno = 0;
 
 	if(student == nullptr && predmet == nullptr)
-		return;
+		return false;
 
 	// Pouzijeme rovnou iterator abychom mohli rovnou mazat
 	for(auto zapis_it = begin(this->zapisy); zapis_it != end(this->zapisy); ) {
@@ -251,8 +285,100 @@ void Databaze::ZrusZapis(std::shared_ptr<Student> student,
 			|| ((*zapis_it)->JePredmetu(predmet)
 				&& (*zapis_it)->JeStudenta(student))) {
 			zapis_it = this->zapisy.erase(zapis_it);
+			zruseno++;
 		} else {
 			++zapis_it;
 		}
 	}
+
+	return zruseno;
+}
+
+// Nacte databazi z JSON souboru
+bool Databaze::NactiSoubor(const std::string nazev) {
+	std::string obsah = "";
+	Serializace s;
+
+	// Nacist soubor
+	std::ifstream soubor(nazev);
+	std::stringstream ss;
+	if(!soubor)
+		return false;
+	ss << soubor.rdbuf();
+	obsah = ss.str();
+
+	// Vymazat databazi
+	this->VymazDatabazi();
+
+	json::Value json = json::Deserialize(obsah);
+
+	// Deserializovat objekty typu Student
+	if(json.HasKey("Studenti") &&
+		json["Studenti"].GetType() == json::ValueType::ArrayVal) {
+		for(auto i : (json::Array)json["Studenti"]) {
+			std::shared_ptr<Student> student = s.DeserializujStudent(i);
+			if(student != nullptr) {
+				this->studenti.push_back(student);
+			}
+		}
+	}
+
+	// Deserializovat objekty typu Predmet
+	if(json.HasKey("Predmety") &&
+		json["Predmety"].GetType() == json::ValueType::ArrayVal) {
+		for(auto i : (json::Array)json["Predmety"]) {
+			std::shared_ptr<Predmet> predmet = s.DeserializujPredmet(i);
+			if(predmet != nullptr) {
+				this->predmety.push_back(predmet);
+			}
+		}
+	}
+
+	// Deserializovat objekty typu Zapis
+	if(json.HasKey("ZapsanePredmety") &&
+		json["ZapsanePredmety"].GetType() == json::ValueType::ArrayVal) {
+		for(auto i : (json::Array)json["ZapsanePredmety"]) {
+			std::shared_ptr<Zapis> zapis = s.DeserializujZapis(i, *this);
+			if(zapis != nullptr) {
+				this->zapisy.push_back(zapis);
+			}
+		}
+	}
+
+	return true;
+}
+
+// Ulozi databazi do JSON souboru
+bool Databaze::UlozSoubor(const std::string nazev) {
+	json::Object json;
+	json::Array studenti;
+	json::Array predmety;
+	json::Array zapisy;
+	Serializace s;
+
+	std::ofstream soubor(nazev);
+	if(!soubor)
+		return false;
+
+	// Serializovat studenty
+	for(auto i : this->studenti)
+		studenti.push_back(s.SerializujStudent(i));
+
+	// Serializovat predmety
+	for(auto i : this->predmety)
+		predmety.push_back(s.SerializujPredmet(i));
+
+	// Serializovat zapisy
+	for(auto i : this->zapisy)
+		zapisy.push_back(s.SerializujZapis(i));
+
+	json["Predmety"] = predmety;
+	json["Studenti"] = studenti;
+	json["ZapsanePredmety"] = zapisy;
+
+	// Vlozit do souboru
+	soubor << json::Serialize(json);
+	soubor.close();
+
+	return true;
 }

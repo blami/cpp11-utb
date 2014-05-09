@@ -1,5 +1,5 @@
 /*
- * zapisy.h: deklarace trid Zapis a Zapisy pro spravu zapsanych predmetu
+ * zapisy.h: deklarace tridy Zapis
  */
 
 #pragma once
@@ -14,6 +14,8 @@ namespace data {
 // Trida predstavujici zapis predmetu
 class Zapis {
 	private:
+	// Zapis nepotrebuje mit identifikator, protoze je jednoznacne urcen
+	// klicem student:predmet.
 	std::shared_ptr<Student> student;
 	std::shared_ptr<Predmet> predmet;
 	Znamka znamka;
@@ -21,9 +23,10 @@ class Zapis {
 	public:
 	Zapis(const std::shared_ptr<Student> student,
 		const std::shared_ptr<Predmet> predmet, Znamka znamka);
-	const std::shared_ptr<Student> VratStudenta() const;
-	const std::shared_ptr<Predmet> VratPredmet() const;
+	std::shared_ptr<Student> VratStudenta() const;
+	std::shared_ptr<Predmet> VratPredmet() const;
 	Znamka VratZnamku() const;
+	std::string VratZnamkuString() const;
 	void NastavZnamku(const Znamka znamka);
 	bool JeStudenta(const std::shared_ptr<Student> student);
 	bool JePredmetu(const std::shared_ptr<Predmet> predmet);

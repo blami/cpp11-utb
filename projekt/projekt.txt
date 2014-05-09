@@ -1,0 +1,71 @@
+Vypracujte program pro práci s evidencí studentů.
+
+Formát uložených dat nemusí být stejný jako vzorová data, obsah ale musí zůstat
+stejný. Zvolte vhodou knihovnu pro serializaci a deserializaci JSON (například
+SuperEasyJSON, Boost Serialization , C++ Rest SDK nebo Cereal atd.) nebo
+případně převeďte soubor na XML. Alternativně je možné (za menší počet bodů,
+může být odečteno až 6 bodů) uložit data ve vlastním formátu do .txt.
+Vypracujte dokumentaci ve formátu docx, odt nebo pdf obsahující stručný popis
+programu a jejich funkcí.
+
+Program bude umožňovat:
+
+    - Načíst data o všech studentech, předmětech a zapsaných předmětech
+    - Uložit data o všech studentech, předmětech a zapsaných předmětech
+    - Zobrazit seznam všech studentů s následujícími položkami:
+        o ID, jméno a příjmení, ročník
+        o průměrná známka ze všech zapsaných předmětů studenta
+    - Zobrazit seznam všech předmětů s následujími položkami:
+        o ID, název předmětu
+        o celkový počet zapsaných studentů
+    - Vytvořit nového studenta a
+        o zadat jeho jméno, příjmení a ročník a vygenerovat ID
+        o zapsat studenta na jeden nebo více předmětů (výchozí známka je F)
+    - Vyhledat a studenta dle ID nebo jména nebo příjmení (v případě více
+      studentů se stejným jménem nebo příjmením zvolit ID) a zobrazit
+      následující údaje:
+        o ID, jméno a příjmení studenta, ročník
+        o Seznam zapsaných předmětů studenta (ID, název, známka)
+      nebo aktualizovat záznam studenta:
+        o aktualizovat jeho jméno, příjmení a ročník.
+        o odepsat studenta z jednoho nebo více předmětů.
+        o zapsat studenta na jeden nebo více předmětů (výchozí známka je F).
+        o zobrazit seznam zapsaných předmětů studenta (ID, název předmětu),
+        o zvolit jeden předmět dle ID předmětu a zadat známku z předmětu.
+      nebo odstranit studenta a odstranit související záznamy o zapsaných
+      předmětech studenta.
+    - Vytvořit nový předmět a zadat:
+        o název předmětu a automaticky vygenerovat ID.
+    - Vyhledat předmět dle ID nebo názvu a
+        o zobrazit seznam zapsaných studentů
+          ID, jméno a příjmení studenta, známka, ročník
+      nebo editovat název předmětu
+      nebo odstranit předmět pouze v případě pokud ho nemá zapsaný žádný
+      student.
+
+Pro výpočet průměrné známky využijte tabulku ECTS:
+
+Známka  Hodnota
+A       1
+B       1,5
+C       2
+D       2,5
+E       3
+F       nezapočítává se do průměru
+
+Podmínky které musí program nutně splňovat:
+
+- Program bude využívat moderní styl c++11 a objektově orientovaný návrh.
+- Není možné obhájit projekt, který nevyužije objektově orientovaný návrh
+  (například celý program bude "zbastlený" ve funkci main).
+- Program bude oddělovat práci s daty v paměti (model) a GUI (výstup na konzoli
+  a čtení z konzole).
+- Je zakázané používat holé ukazatele nebo operátor delete a samozřejmě nesmí
+  dojít k únikům paměti. Místo ukazatelů využívejte "chytré ukazatele" jako je
+  std::shared_ptr a místo new std::make_shared.
+- Využijte datové kontejnery (například std::vector) a algoritmy (například
+  sort). Používejte lamda výrazy pro větší přehlednost kódu.
+- Kód musí být zorganizovaný do hlavičkových (a případně zdrojových souborů).
+- Názvy proměnných musí být samopopisné, například místo int n = 0; s
+  komentářem // pocet prvku, používejte raději int pocetPrvku = 0; V
+  komentářích nepopisujte zřejmé věci, které vyplývají z kódu.

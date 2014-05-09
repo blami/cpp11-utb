@@ -1,9 +1,12 @@
 SOURCES = databaze.cpp \
 	json.cpp \
+	menu.cpp \
+	main.cpp \
 	predmet.cpp \
-	skola.cpp \
+	serializace.cpp \
 	student.cpp \
-	zapis.cpp
+	zapis.cpp \
+	znamka.cpp
 
 CXX = g++
 CXXFLAGS = -g -W -Wall -Werror -std=c++11
@@ -11,13 +14,13 @@ LDFLAGS = -g
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all: skola
+all: main
 
-skola: $(OBJECTS)
+main: $(OBJECTS)
 	$(CXX) $(LDFLAGS) -o $@ $^
 
 clean::
-	$(RM) skola
+	$(RM) main
 
 .cpp.o:
 	$(CXX) -MD -MP $(CXXFLAGS) -o $@ -c $<

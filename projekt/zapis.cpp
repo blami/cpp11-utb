@@ -14,18 +14,23 @@ Zapis::Zapis(std::shared_ptr<Student> student,
 }
 
 // Vrati zapsaneho studenta
-const std::shared_ptr<Student> Zapis::VratStudenta() const {
+std::shared_ptr<Student> Zapis::VratStudenta() const {
 	return this->student;
 }
 
 // Vrati zapsany predmet
-const std::shared_ptr<Predmet> Zapis::VratPredmet() const {
+std::shared_ptr<Predmet> Zapis::VratPredmet() const {
 	return this->predmet;
 }
 
 // Vrati znamku
 Znamka Zapis::VratZnamku() const {
 	return this->znamka;
+}
+
+// Vrati znamku jako string
+std::string Zapis::VratZnamkuString() const {
+	return ZnamkaString(this->znamka);
 }
 
 // Vrati true pokud je dany zapis zapisem studenta

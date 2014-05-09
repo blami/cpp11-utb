@@ -3,6 +3,7 @@
  */
 
 #pragma once
+#include <string>
 
 namespace data {
 
@@ -18,3 +19,7 @@ enum class Znamka {
 };
 
 } /* data:: */
+
+// Pomocne funkce pro praci se znamkou
+std::string ZnamkaString(data::Znamka znamka);
+data::Znamka StringZnamka(std::string string);
