@@ -6,6 +6,8 @@
 #include <memory>
 #include "kruh.h"
 #include "polygony.h"
+#include "ctverec.h"
+#include "trojuhelnik.h"
 #include "platno.h"
 #include "imagekontext.h"
 

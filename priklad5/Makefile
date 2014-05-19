@@ -1,8 +1,10 @@
 SOURCES = iobrazec.cpp \
 	asciikontext.cpp \
+	ctverec.cpp \
 	kruh.cpp \
 	polygony.cpp \
 	platno.cpp \
+	trojuhelnik.cpp \
 	json.cpp \
 	obrazcejson.cpp \
 	imagekontext.cpp

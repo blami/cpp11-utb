@@ -165,7 +165,7 @@ void Polygon::Vykresli(IKontext *kontext) const {
 		float x1 = bod->x, y1 = bod->y, x2 = dalsi_bod->x, y2 = dalsi_bod->y;
 
 		// Prikra linka
-		const bool p = (std::fabs(y2 - y1) > fabs(x2 - x1));
+		const bool p = (std::fabs(y2 - y1) > std::fabs(x2 - x1));
 		// Jde o prikrou linku, pro jednoduchost algoritmu nize prohodime
 		// souradnice (kreslime po y)
 		if(p) { std::swap(x1, y1); std::swap(x2, y2); }
@@ -200,59 +200,5 @@ void Polygon::Vykresli(IKontext *kontext) const {
 
 		// Posunout iterator
 		it++;
-	}
-}
-
-/*
- * Ctverec
- */
-
-// Konstruktor
-Ctverec::Ctverec(const double l, const Bod stred) {
-	this->ZadejDelkuStranyAStred(l, stred);
-}
-
-void Ctverec::ZadejDelkuStranyAStred(const double l, const Bod stred) {
-
-	// Vymazat vsechny body ctverce
-	this->body.clear();
-
-	// Pokud je delka strany 0 nebo mensi, nepridame zadne body
-	if(l <= 0)
-		return;
-
-	// Pridat body ctverce (stred +- pulka delky strany) s vyuzitim metody
-	// ZadejBod() z predku Polygon
-
-	// Body jsou zadavany po smeru hodinovych rucicek od 0,0
-	Polygon::ZadejBod({stred.x - (l / 2), stred.y - (l / 2)});
-	Polygon::ZadejBod({stred.x + (l / 2), stred.y - (l / 2)});
-	Polygon::ZadejBod({stred.x + (l / 2), stred.y + (l / 2)});
-	Polygon::ZadejBod({stred.x - (l / 2), stred.y + (l / 2)});
-}
-
-/*
- * Trojuhelnik
- */
-
-// Konstruktor
-Trojuhelnik::Trojuhelnik(const Bod a, const Bod b, const Bod c) {
-	this->ZadejBody(a, b, c);
-}
-
-void Trojuhelnik::ZadejBody(const Bod a, const Bod b, const Bod c) {
-
-	// Vymazat vsechny body trojuhelniku
-	this->body.clear();
-
-	// Pokud je splnena trojuhelnikova nerovnost, pridat body trojuhelniku
-	double la = std::sqrt(pow(b.x - a.x, 2) + pow(b.y - b.y, 2));
-	double lb = std::sqrt(pow(c.x - b.x, 2) + pow(c.y - b.y, 2));
-	double lc = std::sqrt(pow(a.x - c.x, 2) + pow(a.y - c.y, 2));
-
-	if(la + lb > lc && la + lc > lb && lb + lc > la) {
-		Polygon::ZadejBod(a);
-		Polygon::ZadejBod(b);
-		Polygon::ZadejBod(c);
 	}
 }

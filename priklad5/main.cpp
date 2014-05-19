@@ -12,6 +12,8 @@
 #include "bod.h"
 #include "kruh.h"
 #include "polygony.h"
+#include "ctverec.h"
+#include "trojuhelnik.h"
 #include "platno.h"
 
 using namespace std;

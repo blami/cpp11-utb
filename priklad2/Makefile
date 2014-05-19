@@ -1,8 +1,10 @@
 SOURCES = iobrazec.cpp \
 	asciikontext.cpp \
+	ctverec.cpp \
 	kruh.cpp \
 	polygony.cpp \
-	test.cpp
+	test.cpp \
+	trojuhelnik.cpp
 
 CXX = g++
 CXXFLAGS = -g -W -Wall -Werror -std=c++11

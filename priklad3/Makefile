@@ -1,8 +1,10 @@
 SOURCES = iobrazec.cpp \
 	asciikontext.cpp \
+	ctverec.cpp \
 	kruh.cpp \
 	polygony.cpp \
-	platno.cpp
+	platno.cpp \
+	trojuhelnik.cpp
 
 test_SOURCES = $(SOURCES) \
 	test.cpp

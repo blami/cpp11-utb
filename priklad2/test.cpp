@@ -6,6 +6,8 @@
 #include "asciikontext.h"
 #include "kruh.h"
 #include "polygony.h"
+#include "trojuhelnik.h"
+#include "ctverec.h"
 
 using namespace std;
 

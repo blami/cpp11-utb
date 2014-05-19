@@ -6,6 +6,8 @@
 #include "obrazcejson.h"
 #include "kruh.h"
 #include "polygony.h"
+#include "ctverec.h"
+#include "trojuhelnik.h"
 
 // using namespace zde nepomuze protoze jde o globalni funkce
 namespace obrazcejson {
