@@ -1,0 +1,241 @@
+Vstupním bodem programu je funkce main() v souboru main.cpp. Zde se
+zinicializuje objekt databaze, který slouží pro práci s daty a zajištění
+jejich konzistence a objekt menu, který operuje nad objektem databaze a
+poskytuje uživatelské rozhraní pro práci s daty.
+
+Zavolání metody Spust() na objektu menu spustí cyklus hlavní nabídky programu s
+následujícími volbami:
+
+1-Nacist databazi
+2-Ulozit databazi
+3-Zobrazit seznam studentu
+4-Zobrazit seznam predmetu
+5-Vytvorit studenta
+6-Vytvorit predmet
+7-Vyhledat studenta
+8-Vyhledat predmet
+0-Konec
+
+Následuje popis jednotlivých voleb:
+
+1-Nacist databazi
+Tato volba spustí metodu NacistDatabaziNabidka() třídy Menu, která uživatele
+vyzve pomocí metody NactiString() stejné třídy k zadání jména souboru. Toto
+jméno je pak předáno metodě NactiSoubor() třídy Databaze, která provede
+přečtení a deserializaci JSON souboru do paměťového obrazu databáze. Pokud je
+deserializace neúspěšná, je na textovou konzoli vypsána chybová hláška.
+
+2-Ulozit databazi
+Tato volba spustí metodu UlozitDatabaziNabidka() třídy Menu. Tato metoda
+obdobně jako předchozí metoda NacistDatabaziNabidka() získá název souboru a
+předá jej metodě UlozSoubor() třídy Databaze(). Ta provede serializaci
+paměťového obrazu aktuálního stavu databáze do JSON souboru. Pokud nelze soubor
+danného názvu úspěšně zapsat na disk, je na textovou konzoli opět vypsána
+chybová hláška.
+
+3-Zobrazit seznam studentu
+Tato volba spustí metodu SeznamStudentuVypis() třídy Menu s parametry "Seznam
+vsech studentu," což je popis/titulek následujícího výpisu, a návratovou
+hodnotou metody SeznamStudentu() třídy Databaze, což je seznam chytrých
+ukazatelů na všechny objekty typu Student v databázi. Metoda přes tento seznam
+iteruje a vypíše informace o studentovi získané voláním metod jako VratJmeno(),
+VratPrijmeni(), atd. přímo na každém objektu seznamu. Vyjímku tvoří volání
+metody SpoctiPrumer() třídy Databaze s parametrem chytrý ukazatel na objekt
+typu Student, která pro příslušného studenta vypočte aritmetický průměr jeho
+známek (s vynecháním předmětu hodnocených F). Známkování předmětu je součástí
+vazebního objektu Zapis, který spojuje konkrétní objekt Student, konkrétní
+objekt Predmet a známku. Pro výpočet průměru se používají přímo integrální
+hodnoty jednotlivých známek uvedené ve výčtovém typu Znamka v souboru znamka.h
+(vzniklé přenásobením desetinných hodnot číslem deset.) V závěru metoda
+SeznamStudentuVypis() vypíše ještě celkový počet studentů. Tato metoda je
+generická a lze jí použít i s neúplným seznamem studentů (viz. níže.)
+
+4-Zobrazit seznam predmetu
+Tato volba analogicky k volbě č.3 spustí metodu SeznamPredmetuVypis() s
+parametry "Seznam vsech predmetu," což je opět popis/titulek následujícího
+výpisu, a návratovou hodnotou SeznamPredmetu() třídy Databaze, což je opět
+seznam chytrých ukazatelů na všechny objekty typu Predmet v databázi. Metoda
+stejně jako v předchozím případě iteruje přes všechny položky seznamu a o
+každém předmětu vypíše informace získané voláním metod jako VratNazev().
+Vyjímku tvoří metoda pracující s objekty typu Zapis vážícími se ke každému
+předmětu - tj. metoda VratPocetZapsanychStudentu() třídy Databaze. Tato metoda
+iteruje přes všechny objekty typu Zapis a získá počet unikátních zapsaných
+studentů pro konkrétní předmět. Podobně jako předchozí metoda i metoda
+SeznamPredmetuVypis() vypíše celkový počet vylistovaných předmětů a je
+použitelná s libovolným seznamem předmětů (viz. níže.)
+
+5-Vytvorit studenta
+Tato volba volá metodu VytvoritStudentaNabidka() třídy Menu. Pomocí pomocných
+metod třídy Menu NactiString() a NactiCislo() je načteno jméno, příjmení a
+ročník studenta do pomocných proměnných, které jsou poté použity jako parametry
+metody VytvorStudenta() třídy Databaze, která založí objekt nového studenta,
+postará se o konzistenci přidáním ukazatele do seznamu v databázi a vrátí
+chytrý ukazatel na objekt studenta. Dále je přímo z této metody volána další
+metoda StudentNabidka() třídy Menu s navráceným chytrým ukazatelem jako
+parametrem. Tato metoda zobrazuje podnabídku pro práci s objektem typu Student
+a nabízí následující volby:
+
+    1-Zapsat predmet
+    2-Odepsat predmet
+    3-Aktualizovat jmeno
+    4-Aktualizovat prijmeni
+    5-Aktualizovat rocnik
+    6-Znamkovat
+    7-Vypsat informace
+    8-Smazat
+    0-Zpet
+
+    Následuje popis voleb podnabídky:
+
+    1-Zapsat predmet
+    Tato podnabídka umožňuje zapsání vybraného studenta do předmětu. Spouští
+    metodu ZapsatPredmetNabidka() třídy Menu s chytrým ukazatelem na objekt
+    příslušného studenta jako parametrem. Tato metoda vypíše (pomocí volání
+    metody SeznamPredmetuVypis() třídy Menu popsané v bodu 3 hlavní nabídky
+    výše) seznam všech předmětů a očekává vstup čísla ID zapisovaného předmětu.
+    Pro jeho načtení se používá pomocná funkce NactiCisloString() třídy menu,
+    která vrací načtenou hodnotu jako std::string, ale provádí validaci, že jde
+    o číslo. Poté pomocí metody NajdiPredmet() třídy Databaze, která obdrží dva
+    parametry - vyhledávací kritérium, což je položka výčtového typu
+    PredmetKriterium, která určuje, podle kterého pole se bude vyhledávat a
+    samotný dotaz (tedy ID předmětu jako std::string), a vrátí seznam všech
+    chytrých ukazatelů předmětů vyhovujících kritériu, což je v případě
+    kritéria ID pouze jeden nebo žádný předmět (přesto jde o seznam). Poté je
+    pomocí metody VratZapisy() třídy Databaze ověřeno, že předmět není již
+    zapsán, pokud ne je proveden zápis s výchozí známkou F pomocí metody
+    ZapisPredmet() třídy Databaze. V případě selhání metoda vypíše chybu.
+
+    2-Odepsat predmet
+    Tato podnabídka umožňuje odzapsání zapsaného předmětu zvolenému studentovi.
+    Spouští metodu OdepsatPredmetNabidka() třídy Menu, kde se volá metoda
+    VratZapisy() třídy Databaze s parametrem chytrý ukazatel na vybraného
+    studenta. Tato metoda projde všechny zápisy (seznam objektů typu Zapis v
+    databázi) a vrátí seznam těch, které má zapsán daný student. Pokud je
+    jejich počet nižší než 1, není co odepsat. V opačném případě jsou vypsány
+    všechny zapsané předměty a očekává se vstup ID předmětu který má být
+    odepsán. Pokud jde o ID skutečně zapsaného předmětu, je tento odepsán
+    voláním metody ZrusZapis() třídy Databaze s chytrým ukazatelem na objekt
+    studenta jež má předmět zapsán a chytrým ukazatelem na samotný předmět jako
+    parametry. V případě selhání metoda vypíše chybu.
+
+    3-Aktualizovat jmen
+    4-Aktualizovat prijmeni
+    5-Aktualizovat rocnik
+    Tyto podnabídky provedou aktualizaci příslušného pole vybraného studenta
+    pomocí načtení hodnoty pomocnou metodou NactiString() nebo NactiCislo()
+    třídy Databaze a následným voláním některé z metod NastavJmeno(),
+    NastavPrijmeni() nebo NastavRocnik() přímo na objektu Student.
+
+    6-Znamkovat
+    Tato podnabídka slouží k udělení známky z předmětu. Její funkčnost
+    zajišťuje metoda ZnamkovatNabidka() třídy Databaze, které je opět předán
+    chytrý ukazatel na objekt známkovaného studenta. Podobně jako v případě
+    podnabídky č. 2 jsou vypsány všechny zapsané předměty, které lze známkovat.
+    Poté je uživatel vyzván k zadání ID jednoho z předmětů a zadání známky
+    pomocí pomocné metody NactiZnamku() třídy Menu, která ověří, že známka je z
+    rozsahu A-F. Po úspěšném načtení známky je na konkrétním objektu Zapis pro
+    kombinaci známkovaného studenta a předmětu zavolána metoda NastavZnamku()
+    se zadanou známkou jako parametrem. V případě selhání (volby nezapsaného
+    předmětu) metoda vypíše chybu.
+
+    7-Vypsat informace
+    Tato podnabídka spouští metodu StudentVypis() třídy Menu s chytrým
+    ukazatelem na vybraného studenta jako parametrem. Metoda StudentVypis()
+    pomocí metod tříd Student a Databaze popsaných výše v bodu 3 hlavní nabídky
+    vypíše informace o zapsaném studentovi. Navíc vypíše zapsané předměty a
+    známky z nich stejným mechanismem jako podnabídky 2 a 6 studentského menu.
+    Pro výpis známky používáme metodu VratZnamkuString() třídy Zapis, která
+    převádí položku výčtového typu na std::string.
+
+    8-Smazat
+    Tato podnabídka slouží ke smazání studenta z databáze přímo voláním metody
+    SmazStudenta() třídy Databaze s chytrým ukazatelem na vybraného studenta
+    jako parametrem. Tato metoda zajistí konzistenci databáze tím, že smaže i
+    veškeré zápisy studenta pomocí metody ZrusZapis() třídy Databaze, které
+    předává chytrý ukazatel na studenta ale místo chytrého ukazatele na předmět
+    je použit null ukazatel, což je interpretováno tak, že má být smazán každý
+    předmět tohoto studenta. Po smazání studenta musíme ješte opustit
+    studentskou podnabídku, aby došlo k uvolnění poslední reference na v
+    databázi již neexistující objekt studenta. Student je smazán.
+
+    0-Zpet
+    Tato podnabídka pouze ukončí cyklus podnabídky a vrátí uživatele zpět do
+    hlavní nabídky.
+
+6-Vytvorit predmet
+Tato volba v hlavní nabídce slouží k přidání nového předmětu. Funguje
+analogicky s volbou č. 5 pro přidání nového studenta. Volá metodu
+VytvoritPredmetNabidka() třídy Menu, která načte název nového předmětu a zavolá
+metodu VytvorPredmet() třídy Databaze s načteným názvem jako parametrem. Po
+vytvoření předmětu předá chytrý ukazatel metodě PredmetNabidka třídy Menu,
+která opět analogicky k nabídce č.5 vypíše podnabídku pro práci s předmětem s
+následujícími volbami:
+
+    1-Aktualizovat nazev
+    2-Vypsat informace
+    3-Smazat
+    0-Zpet
+
+    Následuje popis voleb podnabídky:
+
+    1-Aktualizovat nazev
+    Tato podnabídka slouží k aktualizaci názvu vybraného předmětu. Pomocí
+    pomocné metody NactiString() třídy Menu získá nový název předmětu a přímo
+    na objektu predmětu volá metodu NastavNazev() s nově získaným názvem jako
+    parametrem.
+
+    2-Vypsat informace
+    Tato podnabídka analogicky k podanbídce č.7 studentské nabídky spouští
+    metodu PredmetVypis() třídy Menu, jíž předá chytrý ukazatel na aktuálně
+    vybraný předmět. Tato metoda vypíše základní informace o předmětu pomocí
+    volání metod VratID() a VratNazev() přímo na objektu vybraného předmětu.
+    Poté volá metodu VratZapisy() třídy Databaze s vybraným předmětem jako
+    parametrem, přes jejíž návratovou hodnotu - seznam zápisů předmětu iteruje
+    a vypisuje ID, jména, příjmení a známky zapsaných stuedntů.
+
+    3-Smazat
+    Tato podnabídka smaže vybraný předmět, pokud volání metody VratZapisy()
+    třídy Databaze vrátí pro tento předmět prázdný seznam (tj. předmět nemá
+    nikdo zapsán.) V případě že je podmínka splněna, volá se metoda
+    SmazPredmet() třídy Databaze, které je předán chytrý ukazatel na předmět.
+    Obdobně jako u volby č. 8 studentské podnabídky je třeba opustit kontext
+    metody PredtmetNabidka() aby došlo k odstranění poslední reference a k
+    zániku objektu Predmet.
+
+    0-Zpet
+    Tato podnabídka pouze ukončí cyklus podnabídky a vrátí uživatele zpět do
+    hlavní nabídky.
+
+7-Vyhledat studenta
+8-Vyhledat predmet
+Obě tyto nabídky fungují naprosto analogicky a liší se pouze objektem nad
+kterým pracují (Student a Predmet) a kritérii specifikace jednotlivých
+objektů. Slouží k vyhledání jednoho nebo více studentů či předmětů voláním
+metody VyhledatStudentaNabidka() resp. VyhledatPredmetNabidka() třídy Menu. Obě
+tyto metody mají jeden parametr dle_id, který v případě, že je nastaven na True
+způsobí přeskočení výběru kritéria vyhledávání (u studenta ID, Jmeno, Prijmeni,
+u predmetu pak ID, Nazev) a umožní přímo vyhledávání podle ID, které je
+jednoznačné. Toto využíváme pro upřesnění víceznačné volby (tj. vyhledávání
+např. studenta podle jména kdy se jméno u více studentů shoduje.) V případě, že
+je parametr dle_id nastaven na False, metoda nejprve vypíše dialog pro výběr
+kritéria. Po jeho zvolení je načten dotaz (vždy jako std::string) a volána
+metoda NajdiStudenta() resp. NajdiPredmet() třídy Databaze. Tato metoda přijímá
+dva parametry - položku výčtového typu StudentKriterium, resp. PredmetKriterium
+a samotný načtený dotaz. Funguje tak, že podle kritéria porovnává příslušné
+pole všech objektů Student, resp. Predmet, v případě ID exaktně, jinak pomocí
+pomocné metody PorovnejString(), která je necitlivá na velikost písmen a pokud
+dojde ke shodě přidá objekt do výsledkového seznamu. Tento seznam pak vrátí.
+Pokud je v seznamu právě jeden student nebo předmět, volá se rovnou příslušná
+metoda StudentNabidka() popř. PredmetNabidka() třídy Menu a funguje stejně jak
+je popsáno výše v popisu voleb 5 a 6 hlavní nabídky. V případě, že kritériu
+odpovídá více studentů nebo předmětů, volá se funkce SeznamStudentuVypis()
+resp. SeznamPredmetuVypis() podobně jako je tomu u voleb 3 a 4 hlavní nabídky,
+nicméně jako seznam je předán pouze výsledek vyhledávání. Následně se spouští
+rekurzivně metoda VyhledatStudentaNabidka() resp. VyhledatPredmetNabidka() s
+tím, že dle_id je nastaveno na true tak aby uživatel vybral jednoho konkrétního
+studenta nebo předmět (k čemuž mu pomáhá předchozí výpis.)
+
+0-Konec
+Tato volba ukončí program bez uložení databáze.
+
+
